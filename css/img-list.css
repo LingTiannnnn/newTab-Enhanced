@@ -42,6 +42,7 @@
 	padding: 0;
 	font-size: inherit;
 	overflow: hidden;
+	border-radius: 7px;
 }
 
 .custom {
@@ -53,6 +54,57 @@
 .custom svg {
 	padding-top: 1.5rem;
 	height: 30%;
+}
+
+.custom img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: none;
+}
+
+.custom.has-image img {
+	display: block;
+}
+
+.custom.has-image svg,
+.custom.has-image p {
+	display: none;
+}
+
+.custom-item {
+	position: relative;
+}
+
+.img-list .custom-clear {
+	position: absolute;
+	top: .5em;
+	right: .5em;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	width: 1.8em;
+	height: 1.8em;
+	border: 0;
+	border-radius: 50%;
+	background-color: #1c1b22cc;
+	color: white;
+	font-size: 1.4em;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.custom.active + .custom-clear {
+	display: flex;
+}
+
+.img-list .custom-clear:hover {
+	background-color: #000;
+}
+
+.img-list .custom-clear:focus-visible {
+	outline: 2px solid #236ee8;
+	outline-offset: 2px;
 }
 
 .active {

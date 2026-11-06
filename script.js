@@ -4,6 +4,11 @@ const settings = document.getElementsByClassName("settings")[0];
 const imgList = document.getElementsByClassName("img-list")[0].children;
 const credits = document.getElementsByClassName("credits")[0];
 const logo = document.getElementsByClassName("logo")[0];
+const customIndex = imgList.length - 1;
+const customLi = imgList[customIndex];
+const customBtn = customLi.children[0];
+const customImg = customBtn.children[0];
+const customClear = customLi.getElementsByClassName("custom-clear")[0];
 
 openBtn.addEventListener("click", (e) => {
 	settings.classList.add("opened");
@@ -30,7 +35,12 @@ function isInsideSettingsPage(e) {
 
 Object.keys(imgList).forEach((key) => {
 	let img = imgList[key];
+	if (!img || !img.children || img.children.length === 0) return;
 	img.addEventListener("click", () => {
+		if (img === customLi) {
+			handleCustomClick();
+			return;
+		}
 		if (img.children[0].classList.contains("active")) {
 			deselectImg(img);
 			return;
@@ -44,6 +54,11 @@ Object.keys(imgList).forEach((key) => {
 		}
 	})
 })
+
+customClear.addEventListener("click", (e) => {
+	e.stopPropagation();
+	deselectImg(customLi);
+});
 
 function deselectImg(img) {
 	img.children[0].classList.remove("active");
@@ -76,23 +91,114 @@ function setImageAsBackground(image, key) {
 	});
 }
 
-browser.storage.sync.get(["logo", "index"]).then((items) => {
-    if (items.logo) {
-        logo.classList.add(`logo-${items.logo}`);
-    } else {
-        logo.classList.add("logo-firefox");
-    }
-
-    if (items.index == -1 || items.index == null || !imgList[items.index]) return;
-
-    body.style.backgroundImage = `url(${imgList[items.index].children[0].children[0].src})`;
-
-    activateImageInSettingsMenu(items.index);
-
-	if (imgList[items.index].children[1] !== undefined) {
-    	setCredits(items.index);
+function handleCustomClick() {
+	if (customBtn.classList.contains("active")) {
+		pickCustomImage();
+	} else if (customImg.hasAttribute("src")) {
+		restoreCustomImage();
+	} else {
+		pickCustomImage();
 	}
-}).catch((err) => console.error("Failed to load settings:", err));
+}
+
+function restoreCustomImage() {
+	activateImage(customLi);
+	setImageAsBackground(customImg.src, customIndex);
+	credits.classList.add("hidden");
+}
+
+function pickCustomImage() {
+	let input = document.createElement("input");
+	input.accept = "image/*";
+	input.type = "file";
+
+	input.onchange = async (e) => {
+		let file = e.target.files[0];
+		if (!file) return;
+
+		try {
+			let image = await compressImage(file);
+			customImg.src = image;
+			customBtn.classList.add("has-image");
+			activateImage(customLi);
+			setImageAsBackground(image, customIndex);
+			credits.classList.add("hidden");
+
+			browser.storage.local.set({customImage: image})
+				.catch((err) => console.error("Failed to save custom image:", err));
+		} catch (err) {
+			console.error("Failed to load custom image:", err);
+		}
+	};
+
+	input.click();
+}
+
+function compressImage(file) {
+	return new Promise((resolve, reject) => {
+		let url = URL.createObjectURL(file);
+		let image = new Image();
+
+		image.onload = () => {
+			let scale = Math.min(1, 2560 / Math.max(image.width, image.height));
+			let canvas = document.createElement("canvas");
+			canvas.width = Math.round(image.width * scale);
+			canvas.height = Math.round(image.height * scale);
+
+			let context = canvas.getContext("2d");
+			context.fillStyle = "#1c1b22";
+			context.fillRect(0, 0, canvas.width, canvas.height);
+			context.drawImage(image, 0, 0, canvas.width, canvas.height);
+			URL.revokeObjectURL(url);
+
+			resolve(canvas.toDataURL("image/jpeg", 0.85));
+		};
+
+		image.onerror = () => {
+			URL.revokeObjectURL(url);
+			reject(new Error("Unsupported image"));
+		};
+
+		image.src = url;
+	});
+}
+
+async function init() {
+	try {
+		// Restore an uploaded wallpaper; "image" is the key used before 1.6.
+		const local = await browser.storage.local.get(["customImage", "image"]);
+		const customImage = local.customImage || local.image;
+		if (customImage) {
+			customImg.src = customImage;
+			customBtn.classList.add("has-image");
+		}
+
+		const items = await browser.storage.sync.get(["logo", "index"]);
+		if (items.logo) {
+			logo.classList.add(`logo-${items.logo}`);
+		} else {
+			logo.classList.add("logo-firefox");
+		}
+
+		if (items.index == -1 || items.index == null) return;
+
+		const entry = imgList[items.index];
+		if (!entry || !entry.children[0] || !entry.children[0].children[0].hasAttribute("src")) return;
+
+		body.style.backgroundImage = `url(${entry.children[0].children[0].src})`;
+
+		activateImageInSettingsMenu(items.index);
+
+		const creditLink = entry.children[1];
+		if (creditLink && creditLink.tagName === "A") {
+			setCredits(items.index);
+		}
+	} catch (err) {
+		console.error("Failed to load settings:", err);
+	}
+}
+
+init();
 
 function activateImageInSettingsMenu(index) {
 	if (index == null) return;

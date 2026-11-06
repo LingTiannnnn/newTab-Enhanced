@@ -5,9 +5,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>New Tab</title>
 		<link rel="icon" type="image/png" href="./images/firefox-logo.png">
-		<link rel="preconnect" href="https://fonts.googleapis.com" \>
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" \>
-		<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500display=swap" rel="stylesheet" \>
 		<link rel="stylesheet" href="./css/style.css" type="text/css">
 		<link rel="stylesheet" href="./css/main-content.css" type="text/css">
 		<link rel="stylesheet" href="./css/img-list.css" type="text/css">
@@ -97,6 +94,34 @@
 						<button class="img-btn"><img src="images/fox-1284512.jpg"></button>
 						<a href="https://pixabay.com/users/pexels-2286921/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=1284512">Pexels</a>
 						<a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=1284512">Pixabay</a>
+					</li>
+					<li class="custom-item">
+						<button class="img-btn custom" aria-label="Upload image from your computer">
+							<img class="custom-preview" alt="">
+							<svg width="240" height="320" viewBox="0 0 240 320">
+								<g stroke="white" stroke-width="10" fill="transparent">
+									<rect x="5" y="5" height="310" width="230" rx="12" mask="url(#corner)"/>
+									<mask id="corner" stroke="black">
+										<rect x="-5" y="-5" height="330" width="250" fill="white"/>
+										<polygon points="162 0,240 0,240 78" fill="black" />
+								  	</mask>
+								  	<path d="M160 8 V70 Q160 80 170 80 H228 Z" />
+								  	<g transform="translate(120 130) scale(1.2)">
+										<path d="M-30 60 V80 H30 V60" />
+										<g transform="translate(0 10)">
+									  		<path d="M0 50 V10" />
+									  		<rect x="0" y="0" height="30" width="30" transform="translate(0 5) rotate(45)" stroke-width="12" mask="url(#arrow-head)" />
+									  		<mask id="arrow-head" stroke="black">
+												<rect x="-10" y="-10" height="50" width="50" fill="white" />
+												<rect x="0" y="0" height="30" width="30" transform="translate(11 11)" fill="black" />
+									  		</mask>
+										</g>
+								  	</g>
+								</g>
+							</svg>
+							<p>Upload image from your computer</p>
+						</button>
+						<button class="custom-clear" type="button" aria-label="Remove custom wallpaper">×</button>
 					</li>
 				</ul>
 			</div>
