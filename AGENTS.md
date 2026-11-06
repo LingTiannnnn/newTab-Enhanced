@@ -36,6 +36,6 @@ Firefox new-tab page extension: plain HTML/CSS/JS, no framework, no build.
 
 - Keep `manifest_version: 2`, `chrome_url_overrides`/`chrome_settings_overrides` pointing at `./index.html`, and `browser.*` APIs; this is a Firefox package, not a Chrome MV3 one.
 - Keep `permissions` at `["storage"]`. Every added permission enlarges the review surface, so justify it first.
-- Keep the gecko id `{d37d731b-76a9-44d9-9e41-e059cc3bb1c3}` stable. Changing it disconnects the `storage.sync` data of existing users.
+- This fork uses the gecko id `newtab-enhanced@lingtiannnnn`, deliberately different from the upstream id to avoid conflicts. Keep it stable: changing it again disconnects this fork's existing `storage.*` data.
 - Montserrat (weights 400–500) is self-hosted from `fonts/montserrat-latin.woff2` via `@font-face` in `css/style.css`; `fonts/OFL.txt` must ship alongside it. The page must make **zero** network requests on load — any new remote asset breaks the `data_collection_permissions: ["none"]` claim.
-- Bump `version` in `manifest.json` (currently `1.7`) for a release.
+- Bump `version` in `manifest.json` (currently `1.7.1`) for a release.

@@ -15,7 +15,7 @@
   "permissions": ["storage"],
   "browser_specific_settings": {
     "gecko": {
-      "id": "{d37d731b-76a9-44d9-9e41-e059cc3bb1c3}",
+      "id": "newtab-enhanced@lingtiannnnn",
       "data_collection_permissions": {
         "required": ["none"]
       }
